@@ -6,9 +6,9 @@ By the end of this phase, every entity has full CRUD and you can navigate the fu
 
 ---
 
-## Step 16: Create `models/banana_tree.go`
+## Step 16: Create `internal/models/banana_tree.go`
 
-**Delete `models/stubs.go`** — we're replacing all stubs with real models now.
+**Delete `internal/models/stubs.go`** — we're replacing all stubs with real models now.
 
 ```go
 package models
@@ -85,7 +85,7 @@ type BananaTree struct {
 
 ---
 
-## Step 17: Create `models/bunch.go`
+## Step 17: Create `internal/models/bunch.go`
 
 ```go
 package models
@@ -115,7 +115,7 @@ type Bunch struct {
 
 ---
 
-## Step 18: Create `models/banana.go`
+## Step 18: Create `internal/models/banana.go`
 
 ```go
 package models
@@ -160,7 +160,7 @@ type Banana struct {
 
 ---
 
-## Step 19: Create `models/tool.go`
+## Step 19: Create `internal/models/tool.go`
 
 ```go
 package models
@@ -204,7 +204,7 @@ type Tool struct {
 
 ---
 
-## Step 20: Create `models/worker.go`
+## Step 20: Create `internal/models/worker.go`
 
 ```go
 package models
@@ -236,9 +236,9 @@ type Worker struct {
 
 ---
 
-## Step 21: Create `handlers/banana_tree.go`
+## Step 21: Create `internal/handlers/banana_tree.go`
 
-This follows the exact same pattern as `handlers/farm.go`. Here's the full implementation:
+This follows the exact same pattern as `internal/handlers/farm.go`. Here's the full implementation:
 
 ```go
 package handlers
@@ -252,8 +252,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 type BananaTreeHandler struct {
@@ -512,7 +512,7 @@ Always verify that the parent entity exists before creating a child. SQLite has 
 
 ---
 
-## Step 22: Create `handlers/bunch.go`
+## Step 22: Create `internal/handlers/bunch.go`
 
 ```go
 package handlers
@@ -526,8 +526,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 type BunchHandler struct {
@@ -746,7 +746,7 @@ func (h *BunchHandler) ListBananas(w http.ResponseWriter, r *http.Request) {
 
 ---
 
-## Step 23: Create `handlers/banana.go`
+## Step 23: Create `internal/handlers/banana.go`
 
 ```go
 package handlers
@@ -760,8 +760,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 type BananaHandler struct {
@@ -963,7 +963,7 @@ func (h *BananaHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 ---
 
-## Step 24: Create `handlers/tool.go`
+## Step 24: Create `internal/handlers/tool.go`
 
 ```go
 package handlers
@@ -977,8 +977,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 type ToolHandler struct {
@@ -1171,7 +1171,7 @@ func (h *ToolHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 ---
 
-## Step 25: Create `handlers/worker.go`
+## Step 25: Create `internal/handlers/worker.go`
 
 ```go
 package handlers
@@ -1185,8 +1185,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 type WorkerHandler struct {
@@ -1372,7 +1372,7 @@ func (h *WorkerHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 ## Step 26: Add nested routes to Farm handler
 
-Add these methods to `handlers/farm.go`:
+Add these methods to `internal/handlers/farm.go`:
 
 ```go
 // ListTrees handles GET /farms/{id}/trees
@@ -1500,7 +1500,7 @@ func (h *FarmHandler) ListTools(w http.ResponseWriter, r *http.Request) {
 
 ---
 
-## Step 27: Update `routes/routes.go` with all routes
+## Step 27: Update `internal/routes/routes.go` with all routes
 
 Add all new handlers and routes. The full routes section becomes:
 
@@ -1655,19 +1655,19 @@ curl -X POST http://localhost:8080/tools \
 
 ## Phase 3 Checklist
 
-- [ ] `models/stubs.go` deleted
-- [ ] `models/banana_tree.go` with lifecycle status constants and validation
-- [ ] `models/bunch.go` with nullable harvested_at
-- [ ] `models/banana.go` with hand_number and ripeness
-- [ ] `models/tool.go` with type and condition enums
-- [ ] `models/worker.go` with role enum
-- [ ] `handlers/banana_tree.go` with CRUD + ListBunches
-- [ ] `handlers/bunch.go` with CRUD + ListBananas
-- [ ] `handlers/banana.go` with full CRUD
-- [ ] `handlers/tool.go` with full CRUD
-- [ ] `handlers/worker.go` with full CRUD
+- [ ] `internal/models/stubs.go` deleted
+- [ ] `internal/models/banana_tree.go` with lifecycle status constants and validation
+- [ ] `internal/models/bunch.go` with nullable harvested_at
+- [ ] `internal/models/banana.go` with hand_number and ripeness
+- [ ] `internal/models/tool.go` with type and condition enums
+- [ ] `internal/models/worker.go` with role enum
+- [ ] `internal/handlers/banana_tree.go` with CRUD + ListBunches
+- [ ] `internal/handlers/bunch.go` with CRUD + ListBananas
+- [ ] `internal/handlers/banana.go` with full CRUD
+- [ ] `internal/handlers/tool.go` with full CRUD
+- [ ] `internal/handlers/worker.go` with full CRUD
 - [ ] Farm handler has ListTrees, ListWorkers, ListTools methods
-- [ ] `routes/routes.go` updated with all routes
+- [ ] `internal/routes/routes.go` updated with all routes
 - [ ] `database/database.go` has all models in AutoMigrate
 - [ ] Full relationship chain works: Farm → Tree → Bunch → Banana
 - [ ] Nested routes work: `/farms/1/trees`, `/trees/1/bunches`, `/bunches/1/bananas`
