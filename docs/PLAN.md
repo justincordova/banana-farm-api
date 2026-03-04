@@ -74,54 +74,57 @@ Tool
 
 ```
 banana-farm-api/
-├── main.go                     # Entry point: server setup, graceful shutdown
+├── cmd/
+│   └── api/
+│       └── main.go             # Entry point: server setup, graceful shutdown
+├── internal/
+│   ├── config/
+│   │   ├── config.go           # Config struct, env loading, APP_ENV
+│   │   └── logger.go           # slog setup (tint for dev, JSON+lumberjack for prod)
+│   │
+│   ├── database/
+│   │   └── database.go         # GORM connection, auto-migrate, close
+│   │
+│   ├── models/
+│   │   ├── farm.go
+│   │   ├── banana_tree.go
+│   │   ├── bunch.go
+│   │   ├── banana.go
+│   │   ├── tool.go
+│   │   └── worker.go
+│   │
+│   ├── handlers/
+│   │   ├── farm.go
+│   │   ├── farm_test.go
+│   │   ├── banana_tree.go
+│   │   ├── banana_tree_test.go
+│   │   ├── bunch.go
+│   │   ├── bunch_test.go
+│   │   ├── banana.go
+│   │   ├── banana_test.go
+│   │   ├── tool.go
+│   │   ├── tool_test.go
+│   │   ├── worker.go
+│   │   ├── worker_test.go
+│   │   └── health.go
+│   │
+│   ├── routes/
+│   │   └── routes.go           # Chi router, route registration, middleware stack
+│   │
+│   ├── middleware/
+│   │   ├── logging.go          # slog request logger (method, path, status, duration)
+│   │   ├── logging_test.go
+│   │   └── error.go            # NotFound, MethodNotAllowed handlers
+│   │
+│   └── helpers/
+│       ├── response.go         # respondJSON(), respondError() helpers
+│       ├── pagination.go       # ParsePagination from query params
+│       └── pagination_test.go
 ├── .env                        # Environment variables
 ├── .env.example                # Template for .env
 ├── go.mod
 ├── .air.toml                   # Hot reload config
-│
-├── config/
-│   ├── config.go               # Config struct, env loading, APP_ENV
-│   └── logger.go               # slog setup (tint for dev, JSON+lumberjack for prod)
-│
-├── database/
-│   └── database.go             # GORM connection, auto-migrate, close
-│
-├── models/
-│   ├── farm.go
-│   ├── banana_tree.go
-│   ├── bunch.go
-│   ├── banana.go
-│   ├── tool.go
-│   └── worker.go
-│
-├── handlers/
-│   ├── farm.go
-│   ├── farm_test.go
-│   ├── banana_tree.go
-│   ├── banana_tree_test.go
-│   ├── bunch.go
-│   ├── bunch_test.go
-│   ├── banana.go
-│   ├── banana_test.go
-│   ├── tool.go
-│   ├── tool_test.go
-│   ├── worker.go
-│   ├── worker_test.go
-│   └── health.go
-│
-├── routes/
-│   └── routes.go               # Chi router, route registration, middleware stack
-│
-├── middleware/
-│   ├── logging.go              # slog request logger (method, path, status, duration)
-│   ├── logging_test.go
-│   └── error.go                # NotFound, MethodNotAllowed handlers
-│
-└── helpers/
-    ├── response.go             # respondJSON(), respondError() helpers
-    ├── pagination.go           # ParsePagination from query params
-    └── pagination_test.go
+└── README.md
 ```
 
 ---
@@ -263,7 +266,7 @@ ERROR request completed method=GET path=/trees/999 status=500 duration=2.1ms req
 
 ---
 
-## Server Lifecycle (main.go)
+## Server Lifecycle (cmd/api/main.go)
 
 1. Load `.env` file via `godotenv`
 2. Parse config struct via `caarlos0/env`
@@ -320,7 +323,7 @@ func setupTestRouter(db *gorm.DB) chi.Router {
 ### Run tests
 ```bash
 go test ./...              # run all tests
-go test ./handlers/...     # run handler tests only
+go test ./internal/handlers/...     # run handler tests only
 go test -v ./...           # verbose output
 go test -cover ./...       # with coverage
 ```
@@ -333,31 +336,31 @@ go test -cover ./...       # with coverage
 1. `go mod init github.com/justincordova/banana-farm-api`
 2. Install all dependencies
 3. Create `.env` + `.env.example`
-4. `config/config.go` - config struct + env loading
-5. `config/logger.go` - slog setup with tint (dev) / JSON (prod)
-6. `database/database.go` - GORM + SQLite connection + migrations
-7. `main.go` - server startup + graceful shutdown
+4. `internal/config/config.go` - config struct + env loading
+5. `internal/config/logger.go` - slog setup with tint (dev) / JSON (prod)
+6. `internal/database/database.go` - GORM + SQLite connection + migrations
+7. `cmd/api/main.go` - server startup + graceful shutdown
 
 ### Phase 2: First Entity (Farm)
-8. `models/farm.go` - Farm struct with GORM tags
-9. `helpers/response.go` - respondJSON + respondError helpers
-10. `helpers/pagination.go` - pagination parsing
-11. `handlers/farm.go` - full CRUD handlers
-12. `routes/routes.go` - Chi router + middleware stack
-13. `middleware/logging.go` - slog request logger
-14. `middleware/error.go` - NotFound + MethodNotAllowed
-15. Wire everything in main.go and test manually
+8. `internal/models/farm.go` - Farm struct with GORM tags
+9. `internal/helpers/response.go` - respondJSON + respondError helpers
+10. `internal/helpers/pagination.go` - pagination parsing
+11. `internal/handlers/farm.go` - full CRUD handlers
+12. `internal/routes/routes.go` - Chi router + middleware stack
+13. `internal/middleware/logging.go` - slog request logger
+14. `internal/middleware/error.go` - NotFound + MethodNotAllowed
+15. Wire everything in cmd/api/main.go and test manually
 
 ### Phase 3: Remaining Entities
-16. `models/banana_tree.go` + `handlers/banana_tree.go` (with lifecycle status)
-17. `models/bunch.go` + `handlers/bunch.go`
-18. `models/banana.go` + `handlers/banana.go` (with hand_number)
-19. `models/tool.go` + `handlers/tool.go`
-20. `models/worker.go` + `handlers/worker.go`
+16. `internal/models/banana_tree.go` + `internal/handlers/banana_tree.go` (with lifecycle status)
+17. `internal/models/bunch.go` + `internal/handlers/bunch.go`
+18. `internal/models/banana.go` + `internal/handlers/banana.go` (with hand_number)
+19. `internal/models/tool.go` + `internal/handlers/tool.go`
+20. `internal/models/worker.go` + `internal/handlers/worker.go`
 21. Nested routes (`/farms/{id}/trees`, etc.)
 
 ### Phase 4: Features
-22. `handlers/health.go` - health check endpoint
+22. `internal/handlers/health.go` - health check endpoint
 23. Filtering on list endpoints (query params)
 24. `GET /farms/{id}/stats` - stats endpoint
 
