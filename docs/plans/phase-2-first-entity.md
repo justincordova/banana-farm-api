@@ -6,9 +6,9 @@ By the end of this phase you'll have a fully working Farm CRUD API with request 
 
 ---
 
-## Step 8: Create `models/farm.go`
+## Step 8: Create `internal/models/farm.go`
 
-Create the `models/` directory and the Farm model.
+Create the `internal/models/` directory and the Farm model.
 
 ```go
 package models
@@ -45,7 +45,7 @@ type Farm struct {
 **Temporary fix** — until Phase 3, comment out the relationship fields or create stub models:
 
 ```go
-// models/stubs.go — temporary, delete in Phase 3
+// internal/models/stubs.go — temporary, delete in Phase 3
 package models
 
 type BananaTree struct {
@@ -74,12 +74,12 @@ type Tool struct {
 }
 ```
 
-### Update `database/database.go` to include the Farm model:
+### Update `internal/database/database.go` to include the Farm model:
 
 Uncomment the models in the `Migrate` function:
 
 ```go
-import "github.com/justincordova/banana-farm-api/models"
+import "github.com/justincordova/banana-farm-api/internal/models"
 
 func Migrate(db *gorm.DB) error {
 	slog.Info("running database migrations")
@@ -103,9 +103,9 @@ func Migrate(db *gorm.DB) error {
 
 ---
 
-## Step 9: Create `helpers/response.go`
+## Step 9: Create `internal/helpers/response.go`
 
-Create the `helpers/` directory. These are reusable functions every handler will use.
+Create the `internal/helpers/` directory. These are reusable functions every handler will use.
 
 ```go
 package helpers
@@ -161,7 +161,7 @@ func DecodeJSON(r *http.Request, dest any) error {
 
 ---
 
-## Step 10: Create `helpers/pagination.go`
+## Step 10: Create `internal/helpers/pagination.go`
 
 ```go
 package helpers
@@ -271,9 +271,9 @@ func parseIntParam(r *http.Request, key string, defaultVal int) int {
 
 ---
 
-## Step 11: Create `handlers/farm.go`
+## Step 11: Create `internal/handlers/farm.go`
 
-Create the `handlers/` directory.
+Create the `internal/handlers/` directory.
 
 ```go
 package handlers
@@ -287,8 +287,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 // FarmHandler holds dependencies for farm-related HTTP handlers.
@@ -496,7 +496,7 @@ func (h *FarmHandler) Delete(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-### Create `handlers/helpers.go` for shared handler utilities:
+### Create `internal/handlers/helpers.go` for shared handler utilities:
 
 ```go
 package handlers
@@ -539,9 +539,9 @@ Every GORM operation checks for errors. If it's a `gorm.ErrRecordNotFound`, retu
 
 ---
 
-## Step 12: Create `routes/routes.go`
+## Step 12: Create `internal/routes/routes.go`
 
-Create the `routes/` directory.
+Create the `internal/routes/` directory.
 
 ```go
 package routes
@@ -555,9 +555,9 @@ import (
 	"github.com/go-chi/httprate"
 	"gorm.io/gorm"
 
-	"github.com/justincordova/banana-farm-api/config"
-	"github.com/justincordova/banana-farm-api/handlers"
-	"github.com/justincordova/banana-farm-api/middleware"
+	"github.com/justincordova/banana-farm-api/internal/config"
+	"github.com/justincordova/banana-farm-api/internal/handlers"
+	"github.com/justincordova/banana-farm-api/internal/middleware"
 )
 
 // Setup creates and configures the Chi router with all middleware and routes.
@@ -631,9 +631,9 @@ func Setup(cfg *config.Config, db *gorm.DB) *chi.Mux {
 
 ---
 
-## Step 13: Create `middleware/logging.go`
+## Step 13: Create `internal/middleware/logging.go`
 
-Create the `middleware/` directory.
+Create the `internal/middleware/` directory.
 
 ```go
 package middleware
@@ -710,7 +710,7 @@ func Logger(next http.Handler) http.Handler {
 
 ---
 
-## Step 14: Create `middleware/error.go`
+## Step 14: Create `internal/middleware/error.go`
 
 ```go
 package middleware
@@ -718,7 +718,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/justincordova/banana-farm-api/helpers"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
 )
 
 // NotFoundHandler returns a JSON 404 response for unmatched routes.
@@ -742,15 +742,15 @@ func MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 
 ---
 
-## Step 15: Wire everything in `main.go`
+## Step 15: Wire everything in `cmd/api/main.go`
 
-Update `main.go` to use the Chi router instead of the placeholder `http.NewServeMux()`.
+Update `cmd/api/main.go` to use the Chi router instead of the placeholder `http.NewServeMux()`.
 
 ### Changes to make:
 
 **Add import:**
 ```go
-"github.com/justincordova/banana-farm-api/routes"
+"github.com/justincordova/banana-farm-api/internal/routes"
 ```
 
 **Replace the placeholder router section with:**
@@ -782,7 +782,7 @@ Start the server:
 
 ```bash
 air
-# or: go run .
+# or: go run ./cmd/api
 ```
 
 ### Test CRUD operations:
@@ -855,17 +855,17 @@ curl -X POST http://localhost:8080/farms \
 
 ## Phase 2 Checklist
 
-- [ ] `models/farm.go` with GORM tags, JSON tags, and validation tags
-- [ ] `models/stubs.go` with temporary stub types (to be replaced in Phase 3)
-- [ ] `database/database.go` updated with Farm in AutoMigrate
-- [ ] `helpers/response.go` with RespondJSON, RespondError, DecodeJSON
-- [ ] `helpers/pagination.go` with ParsePagination, PaginatedResponse
-- [ ] `handlers/farm.go` with List, Create, Get, Update, Delete
-- [ ] `handlers/helpers.go` with ParseDate utility (exported for testability)
-- [ ] `routes/routes.go` with Chi router, full middleware stack, farm routes
-- [ ] `middleware/logging.go` with slog request logger
-- [ ] `middleware/error.go` with NotFound and MethodNotAllowed handlers
-- [ ] `main.go` updated to use `routes.Setup()`
+- [ ] `internal/models/farm.go` with GORM tags, JSON tags, and validation tags
+- [ ] `internal/models/stubs.go` with temporary stub types (to be replaced in Phase 3)
+- [ ] `internal/database/database.go` updated with Farm in AutoMigrate
+- [ ] `internal/helpers/response.go` with RespondJSON, RespondError, DecodeJSON
+- [ ] `internal/helpers/pagination.go` with ParsePagination, PaginatedResponse
+- [ ] `internal/handlers/farm.go` with List, Create, Get, Update, Delete
+- [ ] `internal/handlers/helpers.go` with ParseDate utility (exported for testability)
+- [ ] `internal/routes/routes.go` with Chi router, full middleware stack, farm routes
+- [ ] `internal/middleware/logging.go` with slog request logger
+- [ ] `internal/middleware/error.go` with NotFound and MethodNotAllowed handlers
+- [ ] `cmd/api/main.go` updated to use `routes.Setup()`
 - [ ] All CRUD operations work via curl
 - [ ] Colored request logs visible in terminal
 - [ ] 404/405 return consistent JSON errors
