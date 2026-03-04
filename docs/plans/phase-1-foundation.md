@@ -120,9 +120,9 @@ tmp/
 
 ---
 
-## Step 4: Create `config/config.go`
+## Step 4: Create `internal/config/config.go`
 
-Create the `config/` directory and the config file.
+Create the `internal/config/` directory and the config file.
 
 ```go
 package config
@@ -186,7 +186,7 @@ func Load() (*Config, error) {
 
 ---
 
-## Step 5: Create `config/logger.go`
+## Step 5: Create `internal/config/logger.go`
 
 ```go
 package config
@@ -272,9 +272,9 @@ func parseLogLevel(level string) slog.Level {
 
 ---
 
-## Step 6: Create `database/database.go`
+## Step 6: Create `internal/database/database.go`
 
-Create the `database/` directory and the database file.
+Create the `internal/database/` directory and the database file.
 
 ```go
 package database
@@ -353,9 +353,9 @@ func Close(db *gorm.DB) error {
 
 ---
 
-## Step 7: Create `main.go`
+## Step 7: Create `cmd/api/main.go`
 
-This is the entry point. It wires everything together and handles graceful shutdown.
+Create the `cmd/api/` directory. This is the entry point — it wires everything together and handles graceful shutdown.
 
 ```go
 package main
@@ -370,8 +370,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/justincordova/banana-farm-api/config"
-	"github.com/justincordova/banana-farm-api/database"
+	"github.com/justincordova/banana-farm-api/internal/config"
+	"github.com/justincordova/banana-farm-api/internal/database"
 )
 
 func main() {
@@ -484,7 +484,7 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-  cmd = "go build -o ./tmp/main ."
+  cmd = "go build -o ./tmp/main ./cmd/api"
   bin = "./tmp/main"
   include_ext = ["go", "toml", "env"]
   exclude_dir = ["tmp", "vendor", "docs"]
@@ -499,7 +499,7 @@ tmp_dir = "tmp"
 
 ### How to use Air:
 ```bash
-# Instead of `go run .`, use:
+# Instead of `go run ./cmd/api`, use:
 air
 
 # Air watches for file changes and automatically rebuilds + restarts
@@ -513,7 +513,7 @@ air
 Run the server:
 
 ```bash
-go run .
+go run ./cmd/api
 ```
 
 You should see colored output like:
@@ -548,9 +548,9 @@ Check that `banana_farm.db` was created in your project root.
 
 - [ ] `go.mod` and `go.sum` exist with all dependencies
 - [ ] `.env`, `.env.example`, and `.gitignore` created
-- [ ] `config/config.go` loads env vars into a typed struct
-- [ ] `config/logger.go` sets up slog with tint (colored dev output)
-- [ ] `database/database.go` connects to SQLite and has migration placeholder
-- [ ] `main.go` starts server, logs startup info, shuts down gracefully
+- [ ] `internal/config/config.go` loads env vars into a typed struct
+- [ ] `internal/config/logger.go` sets up slog with tint (colored dev output)
+- [ ] `internal/database/database.go` connects to SQLite and has migration placeholder
+- [ ] `cmd/api/main.go` starts server, logs startup info, shuts down gracefully
 - [ ] `.air.toml` configured for hot reload
 - [ ] Server runs, responds to requests, and shuts down cleanly on Ctrl+C
