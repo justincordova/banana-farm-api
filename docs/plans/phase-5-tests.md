@@ -10,7 +10,7 @@ By the end of this phase, every CRUD operation, middleware behavior, and helper 
 
 Create a shared test setup file that every test file will use.
 
-### Create `handlers/test_helpers_test.go`
+### Create `internal/handlers/test_helpers_test.go`
 
 ```go
 package handlers_test
@@ -30,9 +30,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/justincordova/banana-farm-api/config"
-	"github.com/justincordova/banana-farm-api/models"
-	"github.com/justincordova/banana-farm-api/routes"
+	"github.com/justincordova/banana-farm-api/internal/config"
+	"github.com/justincordova/banana-farm-api/internal/models"
+	"github.com/justincordova/banana-farm-api/internal/routes"
 )
 
 // setupTestDB creates a fresh in-memory SQLite database with all tables.
@@ -180,7 +180,7 @@ func seedBunch(t *testing.T, db *gorm.DB, treeID uint) models.Bunch {
 
 ## Step 34: Write Farm handler tests
 
-### Create `handlers/farm_test.go`
+### Create `internal/handlers/farm_test.go`
 
 ```go
 package handlers_test
@@ -192,8 +192,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 func TestCreateFarm(t *testing.T) {
@@ -380,7 +380,7 @@ func TestDeleteFarm(t *testing.T) {
 
 **`t.Run("name", func(t *testing.T) {...})`** — subtests. Each subtest gets its own name and can be run individually:
 ```bash
-go test ./handlers/ -run TestCreateFarm/valid_farm
+go test ./internal/handlers/ -run TestCreateFarm/valid_farm
 ```
 Spaces in the name become underscores when running.
 
@@ -396,7 +396,7 @@ Use `require` for setup/preconditions (if setup fails, no point continuing). Use
 
 ## Step 35: Write BananaTree handler tests
 
-### Create `handlers/banana_tree_test.go`
+### Create `internal/handlers/banana_tree_test.go`
 
 ```go
 package handlers_test
@@ -408,8 +408,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 func TestCreateBananaTree(t *testing.T) {
@@ -558,7 +558,7 @@ func TestListTreeBunches(t *testing.T) {
 
 ## Step 36: Write Banana and Bunch handler tests
 
-### Create `handlers/bunch_test.go`
+### Create `internal/handlers/bunch_test.go`
 
 ```go
 package handlers_test
@@ -570,8 +570,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 func TestCreateBunch(t *testing.T) {
@@ -632,7 +632,7 @@ func TestUpdateBunchHarvest(t *testing.T) {
 }
 ```
 
-### Create `handlers/banana_test.go`
+### Create `internal/handlers/banana_test.go`
 
 ```go
 package handlers_test
@@ -644,8 +644,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 func TestCreateBanana(t *testing.T) {
@@ -801,7 +801,7 @@ func TestListBananasFilter(t *testing.T) {
 
 ## Step 37: Write Tool and Worker handler tests
 
-### Create `handlers/tool_test.go`
+### Create `internal/handlers/tool_test.go`
 
 ```go
 package handlers_test
@@ -813,7 +813,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 func TestToolCRUD(t *testing.T) {
@@ -903,7 +903,7 @@ func TestToolCRUD(t *testing.T) {
 }
 ```
 
-### Create `handlers/worker_test.go`
+### Create `internal/handlers/worker_test.go`
 
 ```go
 package handlers_test
@@ -915,8 +915,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 func TestWorkerCRUD(t *testing.T) {
@@ -1013,7 +1013,7 @@ func TestWorkerFilters(t *testing.T) {
 
 ## Step 38: Write middleware tests
 
-### Create `middleware/logging_test.go`
+### Create `internal/middleware/logging_test.go`
 
 ```go
 package middleware_test
@@ -1025,7 +1025,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/middleware"
+	"github.com/justincordova/banana-farm-api/internal/middleware"
 )
 
 func TestLoggerMiddleware(t *testing.T) {
@@ -1063,7 +1063,7 @@ func TestLoggerMiddleware(t *testing.T) {
 }
 ```
 
-### Create `middleware/error_test.go`
+### Create `internal/middleware/error_test.go`
 
 ```go
 package middleware_test
@@ -1076,8 +1076,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/helpers"
-	"github.com/justincordova/banana-farm-api/middleware"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
+	"github.com/justincordova/banana-farm-api/internal/middleware"
 )
 
 func TestNotFoundHandler(t *testing.T) {
@@ -1114,7 +1114,7 @@ func TestMethodNotAllowedHandler(t *testing.T) {
 
 ## Step 39: Write pagination helper tests
 
-### Create `helpers/pagination_test.go`
+### Create `internal/helpers/pagination_test.go`
 
 ```go
 package helpers_test
@@ -1125,7 +1125,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/helpers"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
 )
 
 func TestParsePagination(t *testing.T) {
@@ -1239,7 +1239,7 @@ This is a most common Go testing pattern. Instead of writing separate test funct
 
 ## Step 40: Write response helper tests
 
-### Create `helpers/response_test.go`
+### Create `internal/helpers/response_test.go`
 
 ```go
 package helpers_test
@@ -1254,7 +1254,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/justincordova/banana-farm-api/helpers"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
 )
 
 func TestRespondJSON(t *testing.T) {
@@ -1373,7 +1373,7 @@ func TestDecodeJSON(t *testing.T) {
 
 ## Step 41: Write ParseDate tests
 
-### Create `handlers/helpers_test.go`
+### Create `internal/handlers/helpers_test.go`
 
 Create a test file for the `ParseDate` utility function. Because `ParseDate` is now exported,
 it's accessible from the `handlers_test` (black-box) package.
@@ -1387,7 +1387,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/justincordova/banana-farm-api/handlers"
+	"github.com/justincordova/banana-farm-api/internal/handlers"
 )
 
 func TestParseDate(t *testing.T) {
@@ -1451,7 +1451,7 @@ func TestParseDate(t *testing.T) {
 
 ## Step 42: Write model tests
 
-### Create `models/models_test.go`
+### Create `internal/models/models_test.go`
 
 ```go
 package models_test
@@ -1467,7 +1467,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/justincordova/banana-farm-api/models"
+	"github.com/justincordova/banana-farm-api/internal/models"
 )
 
 func setupTestDB(t *testing.T) *gorm.DB {
@@ -1685,7 +1685,7 @@ func TestNestedRelationships(t *testing.T) {
 
 ## Step 43: Write health handler tests
 
-### Create `handlers/health_test.go`
+### Create `internal/handlers/health_test.go`
 
 ```go
 package handlers_test
@@ -1697,7 +1697,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/justincordova/banana-farm-api/handlers"
+	"github.com/justincordova/banana-farm-api/internal/handlers"
 )
 
 func TestHealthCheck(t *testing.T) {
@@ -1777,10 +1777,9 @@ go test -v ./...
 go test -cover ./...
 
 # Run a specific test file
-go test -v ./handlers/ -run TestCreateFarm
-
+go test -v ./internal/handlers/ -run TestCreateFarm
 # Run a specific subtest
-go test -v ./handlers/ -run TestCreateFarm/valid_farm
+go test -v ./internal/handlers/ -run TestCreateFarm/valid_farm
 
 # Generate coverage report (HTML)
 go test -coverprofile=coverage.out ./...
@@ -1804,29 +1803,29 @@ go tool cover -html=coverage.out -o coverage.html
     --- PASS: TestCreateFarm/negative_size (0.00s)
 ...
 PASS
-ok  	github.com/justincordova/banana-farm-api/handlers	0.15s
-ok  	github.com/justincordova/banana-farm-api/helpers	0.01s
-ok  	github.com/justincordova/banana-farm-api/middleware	0.01s
+ok  	github.com/justincordova/banana-farm-api/internal/handlers	0.15s
+ok  	github.com/justincordova/banana-farm-api/internal/helpers	0.01s
+ok  	github.com/justincordova/banana-farm-api/internal/middleware	0.01s
 ```
 
 ---
 
 ## Phase 5 Checklist
 
-- [ ] `handlers/test_helpers_test.go` with setupTestDB, setupTestRouter, makeRequest, parseResponse, seed functions
-- [ ] `handlers/helpers_test.go` with ParseDate tests
-- [ ] `handlers/farm_test.go` — Create, Get, List, Update, Delete with edge cases
-- [ ] `handlers/health_test.go` — healthy response, DB failure detection, uptime calculation
-- [ ] `handlers/banana_tree_test.go` — CRUD, lifecycle status updates, filters, nested bunches
-- [ ] `handlers/bunch_test.go` — CRUD, harvest date update
-- [ ] `handlers/banana_test.go` — CRUD, defaults, validation, ripeness updates, combined filters
-- [ ] `handlers/tool_test.go` — full CRUD lifecycle, invalid type rejection
-- [ ] `handlers/worker_test.go` — full CRUD lifecycle, role filter
-- [ ] `middleware/logging_test.go` — passes requests through, preserves status codes
-- [ ] `middleware/error_test.go` — NotFound and MethodNotAllowed return JSON
-- [ ] `helpers/response_test.go` — RespondJSON, RespondError, RespondErrorWithDetails, DecodeJSON
-- [ ] `helpers/pagination_test.go` — defaults, max limit, offset calculation, total pages
-- [ ] `models/models_test.go` — relationships, cascading deletes, nested preloading
+- [ ] `internal/handlers/test_helpers_test.go` with setupTestDB, setupTestRouter, makeRequest, parseResponse, seed functions
+- [ ] `internal/handlers/helpers_test.go` with ParseDate tests
+- [ ] `internal/handlers/farm_test.go` — Create, Get, List, Update, Delete with edge cases
+- [ ] `internal/handlers/health_test.go` — healthy response, DB failure detection, uptime calculation
+- [ ] `internal/handlers/banana_tree_test.go` — CRUD, lifecycle status updates, filters, nested bunches
+- [ ] `internal/handlers/bunch_test.go` — CRUD, harvest date update
+- [ ] `internal/handlers/banana_test.go` — CRUD, defaults, validation, ripeness updates, combined filters
+- [ ] `internal/handlers/tool_test.go` — full CRUD lifecycle, invalid type rejection
+- [ ] `internal/handlers/worker_test.go` — full CRUD lifecycle, role filter
+- [ ] `internal/middleware/logging_test.go` — passes requests through, preserves status codes
+- [ ] `internal/middleware/error_test.go` — NotFound and MethodNotAllowed return JSON
+- [ ] `internal/helpers/response_test.go` — RespondJSON, RespondError, RespondErrorWithDetails, DecodeJSON
+- [ ] `internal/helpers/pagination_test.go` — defaults, max limit, offset calculation, total pages
+- [ ] `internal/models/models_test.go` — relationships, cascading deletes, nested preloading
 - [ ] `go test ./...` passes with no failures
 - [ ] `go test -cover ./...` shows coverage you're happy with
 
