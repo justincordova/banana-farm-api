@@ -1596,7 +1596,7 @@ err := db.AutoMigrate(
 
 ```bash
 rm banana_farm.db
-go run .
+go run ./cmd/api
 ```
 
 ---
