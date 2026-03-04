@@ -6,7 +6,7 @@ By the end of this phase, your API has observability (health check), analytics (
 
 ---
 
-## Step 29: Create `handlers/health.go`
+## Step 29: Create `internal/handlers/health.go`
 
 ```go
 package handlers
@@ -19,8 +19,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/justincordova/banana-farm-api/config"
-	"github.com/justincordova/banana-farm-api/helpers"
+	"github.com/justincordova/banana-farm-api/internal/config"
+	"github.com/justincordova/banana-farm-api/internal/helpers"
 )
 
 // HealthHandler holds dependencies for the health check endpoint.
@@ -30,7 +30,7 @@ type HealthHandler struct {
 	StartTime time.Time
 }
 
-// NewHealthHandler creates a new HealthHandler. Pass time.Now() as startTime from main.go.
+// NewHealthHandler creates a new HealthHandler. Pass time.Now() as startTime from cmd/api/main.go.
 func NewHealthHandler(db *gorm.DB, cfg *config.Config, startTime time.Time) *HealthHandler {
 	return &HealthHandler{
 		DB:        db,
@@ -108,7 +108,7 @@ func (h *HealthHandler) Check(w http.ResponseWriter, r *http.Request) {
 - **`sqlDB.Stats()`** gives you connection pool metrics — useful for debugging connection leaks in production
 - **503 Service Unavailable** — the correct HTTP status for "server is alive but can't serve requests". Load balancers use this to route traffic away
 - **`runtime.Version()`** returns `go1.22.0` or similar — handy for verifying deployments
-- **`StartTime`** is passed from `main.go` so we can calculate uptime
+- **`StartTime`** is passed from `cmd/api/main.go` so we can calculate uptime
 
 ### Example response:
 ```json
@@ -131,9 +131,9 @@ func (h *HealthHandler) Check(w http.ResponseWriter, r *http.Request) {
 
 ## Step 30: Add stats endpoint to Farm handler
 
-Add this method to `handlers/farm.go`:
+Add this method to `internal/handlers/farm.go`:
 
-**Note:** The `handlers/farm.go` file already imports `errors`, `log/slog`, `chi`, `gorm`, and `helpers` from Phase 2 (we added `"errors"` in that phase), so you don't need to add any imports for this method.
+**Note:** The `internal/handlers/farm.go` file already imports `errors`, `log/slog`, `chi`, `gorm`, and `helpers` from Phase 2 (we added `"errors"` in that phase), so you don't need to add any imports for this method.
 
 ```go
 // FarmStats is the response for GET /farms/{id}/stats
@@ -292,7 +292,7 @@ This is `SELECT status, COUNT(*) FROM banana_trees WHERE farm_id = ? GROUP BY st
 
 ---
 
-## Step 31: Update `routes/routes.go` with new endpoints
+## Step 31: Update `internal/routes/routes.go` with new endpoints
 
 Add the health route and uncomment the stats route:
 
@@ -323,7 +323,7 @@ func Setup(cfg *config.Config, db *gorm.DB, startTime time.Time) *chi.Mux {
 	// ... rest of routes unchanged ...
 ```
 
-### Update `main.go` to pass startTime:
+### Update `cmd/api/main.go` to pass startTime:
 
 Add `startTime` before the server setup:
 
@@ -340,7 +340,7 @@ func main() {
 }
 ```
 
-Don't forget to add `"time"` to the imports in `main.go` and update the `routes.Setup` function signature.
+Don't forget to add `"time"` to the imports in `cmd/api/main.go` and update the `routes.Setup` function signature.
 
 ---
 
@@ -448,12 +448,12 @@ curl http://localhost:8080/farms/1/stats
 
 ## Phase 4 Checklist
 
-- [ ] `handlers/health.go` with DB ping, uptime, connection stats
+- [ ] `internal/handlers/health.go` with DB ping, uptime, connection stats
 - [ ] `GET /health` returns 200 when healthy, 503 when DB is down
-- [ ] `handlers/farm.go` has Stats method with JOIN queries
+- [ ] `internal/handlers/farm.go` has Stats method with JOIN queries
 - [ ] `GET /farms/{id}/stats` returns counts and breakdowns
-- [ ] `routes/routes.go` updated with health and stats routes
-- [ ] `main.go` passes `startTime` to routes
+- [ ] `internal/routes/routes.go` updated with health and stats routes
+- [ ] `cmd/api/main.go` passes `startTime` to routes
 - [ ] All list endpoints support `?page=&limit=` pagination
 - [ ] All filter parameters work as documented
 - [ ] Nested route filters work (`/farms/1/trees?status=flowering`)
